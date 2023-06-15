@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>RoundRobin</title>
+</head>
+
+<body style="background-color: rgb(196 181 253);">
+  <style>
+    .table-cell {
+      border: 1px solid black;
+      padding: 8px;
+    }
+  </style>
+  <nav class="bg-violet-700 text-white">
+    <!-- <ul class="flex items-center justify-center px-25 py-10">
+      <li class="px-10 hover:text-violet-200"><a href="index.html">Home</a></li>
+      <li class="px-10 hover:text-violet-200"><a href="RoundRobin.html">Round Robin Scheduling</a></li>
+      <li class="px-10 hover:text-violet-200"><a href="SJF.html"> Shortest Job First</a></li>
+      <li class="px-10 hover:text-violet-200"><a href="SRTF.html"> Shortest Remaining Time First</a></li>
+    </ul> -->
+
+    <h1 class="font-bold flex justify-center items-center h-screen text-5xl text-black">
+      <br>
+      <br>
+      Operating System Scheduling Algorithm Demo - Round Robin
+      <br>
+      <br>
+      <br>
+      <br>
+    </h1>
+
+  </nav>
+  <br><br><br>
+  <center>
+    <div class="justify-center items-center">
+      <h1 class="text-7xl font-bold justify-center">ROUND ROBIN SCHEDULING</h1>
+    </div>
+  </center>
+  <br><br><br>
+  <div>
+    <div style="display: flex; justify-content: center;">
+      <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+          <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+            <table style="border-collapse: collapse; border: 1px solid black;" id="inputTable" class="py-8 px-4">
+              <tr>
+                <th style="border: 1px solid black; padding: 8px;">Process</th>
+                <th style="border: 1px solid black; padding: 8px;">Arrival time</th>
+                <th style="border: 1px solid black; padding: 8px;">Burst time</th>
+                <th style="border: 1px solid black; padding: 8px;">Time Unit</th>
+              </tr>
+              <tr>
+                <td><input type="number" class='table-cell' id="p" min="1"></td>
+                <td><input type="number" class='table-cell' id="at"></td>
+                <td><input type="number" class='table-cell' id="bt"></td>
+                <td>
+                  <select class='table-cell' id="unit">
+                    <option value="ns">ns</option>
+                    <option value="ms">ms</option>
+                    <option value="sec">sec</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="number" class='table-cell' id="p"></td>
+                <td><input type="number" class='table-cell' id="at"></td>
+                <td><input type="number" class='table-cell' id="bt"></td>
+                <td>
+                  <select class='table-cell' id="unit">
+                    <option value="ns">ns</option>
+                    <option value="ms">ms</option>
+                    <option value="sec">sec</option>
+                  </select>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="display: flex; justify-content: center;">
+    <button onclick="addRow()" style="border: 20px; border-color: black; background-color: grey; height: 30px; width:30px;">+</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button style="background-color: #7F00FF; color: #fff; border-radius: 9999px; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: bold; text-align: center; text-decoration: none; display: inline-block; margin: 1rem 0; cursor: pointer; transition: background-color 0.3s ease-in-out;"
+      onmouseover="this.style.backgroundColor='#7F00FF'; this.style.color='white'"
+      onmouseout="this.style.backgroundColor='violet'; this.style.color='white'"
+      onclick="executeRR()">
+      Execute
+    </button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button onclick="deleteRow()" style="border: 20px; border-color: black; background-color: grey; height: 30px; width:30px;">-</button>
+  </div>
+  <br>
+  <br>
+  <div style="display: flex; justify-content: center;">
+    <button style="background-color: #7F00FF; color: #fff; border-radius: 9999px; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: bold; text-align: center; text-decoration: none; display: inline-block; margin: 1rem 0; cursor: pointer; transition: background-color 0.3s ease-in-out;"onclick="generateUniformDistribution()" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Generate Uniform Distribution</button>&nbsp;&nbsp;
+    <button style="background-color: #7F00FF; color: #fff; border-radius: 9999px; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: bold; text-align: center; text-decoration: none; display: inline-block; margin: 1rem 0; cursor: pointer; transition: background-color 0.3s ease-in-out;"onclick="generateNormalDistribution()" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Generate Normal Distribution</button>&nbsp;&nbsp;
+    <button style="background-color: #7F00FF; color: #fff; border-radius: 9999px; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: bold; text-align: center; text-decoration: none; display: inline-block; margin: 1rem 0; cursor: pointer; transition: background-color 0.3s ease-in-out;"onclick="generateExponentialDistribution()" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Generate Exponential Distribution</button>
+  </div>
+  <br><br><br>
+  <center>
+    <div class="justify-center items-center">
+      <h1 class="text-3xl font-bold justify-center">Output</h1>
+    </div>
+  </center>
+  <br>
+  <div style="display: flex; justify-content: center;">
+    <div id="outputTableDiv"></div>
+  </div>
+  <center>
+    <div>
+      Gantt Chart:
+    </div>
+    <div id="chart"></div>
+    <div id="results"></div>
+  </center>
+  <script>
+     function addRow() {
+      var table = document.getElementById("inputTable");
+      var rowCount = table.rows.length;
+      var row = table.insertRow(rowCount - 1);
+      var processCell = row.insertCell(0);
+      var arrivalTimeCell = row.insertCell(1);
+      var burstTimeCell = row.insertCell(2);
+      var unitCell = row.insertCell(3);
+      processCell.innerHTML = "<input type='number'class='table-cell' id='p' min=1>";
+      arrivalTimeCell.innerHTML = "<input type='number' class='table-cell' id='at' >";
+      burstTimeCell.innerHTML = "<input type='number' class='table-cell' id='bt'>";
+      unitCell.innerHTML = "                  <select class='table-cell' id='unit'><option value='ns'>ns</option><option value='ms'>ms</option><option value='sec'>sec</option></select>";
+    }
+
+    function deleteRow() {
+      var table = document.getElementById("inputTable");
+      var rowCount = table.rows.length;
+      if (rowCount > 2) {
+        table.deleteRow(rowCount - 2);
+      }
+    }
+
+    function getTimeMultiplier(timeUnit) {
+  switch (timeUnit) {
+    case "ns":
+      return 1;
+    case "ms":
+      return 1000000;
+    case "s":
+      return 1000000000;
+    default:
+      return 1;
+  }
+}
+
+function getTimeDivider(timeUnit) {
+  switch (timeUnit) {
+    case "ns":
+      return 1;
+    case "ms":
+      return 1000000;
+    case "s":
+      return 1000000000;
+    default:
+      return 1;
+  }
+}
+
+function executeRR() {
+  var table = document.getElementById("inputTable");
+  var rows = table.rows;
+  var processes = [];
+  var arrivalTimes = [];
+  var burstTimes = [];
+  var timeUnits = [];
+
+for (var i = 1; i < rows.length; i++) {
+  var cells = rows[i].cells;
+  var processValue = parseInt(cells[0].querySelector("input").value);
+  var arrivalTime = parseInt(cells[1].querySelector("input").value);
+  var burstTime = parseInt(cells[2].querySelector("input").value);
+  var timeUnit = cells[3].querySelector("select").value;
+  if (processValue >= 1) {
+    processes.push(processValue);
+    arrivalTimes.push(arrivalTime);
+    burstTimes.push(burstTime);
+    timeUnits.push(timeUnit);
+  } else {
+    alert("Process values must be greater than or equal to 1");
+    return; // Stop execution if validation fails
+  }
+
+  if (arrivalTime <= 0 || burstTime <= 0) {
+    alert("Arrival time and burst time must be greater than zero.");
+    return;
+  }
+}
+
+
+  var quantumInSeconds = parseInt(prompt("Enter the time quantum in seconds:"));
+  var timeUnit = prompt("Enter the time unit (ns, ms, s):");
+
+  var quantum = quantumInSeconds * getTimeMultiplier(timeUnit);
+
+  // Adjust burst times based on time unit
+  var timeMultiplier;
+  for (var i = 0; i < burstTimes.length; i++) {
+    timeMultiplier = getTimeMultiplier(timeUnits[i]);
+    burstTimes[i] *= timeMultiplier;
+
+  }
+
+  var time = 0;
+  var remainingTimes = burstTimes.slice();
+  var completed = [];
+  var chart = [];
+
+  while (completed.length < processes.length) {
+    var executed = false;
+    for (var i = 0; i < processes.length; i++) {
+      var process = processes[i];
+      var burstTime = remainingTimes[i];
+      if (burstTime > 0) {
+        executed = true;
+        var executionTime = Math.min(quantum, burstTime);
+        remainingTimes[i] -= executionTime;
+        time += executionTime;
+        chart.push({ process: process, start: time - executionTime, end: time });
+        if (remainingTimes[i] === 0) {
+          completed.push(process);
+        }
+      }
+    }
+    if (!executed) {
+      time++;
+      chart.push({ process: "", start: time - 1, end: time });
+    }
+  }
+
+  // Adjust chart times based on time unit
+  var timeDivider = getTimeDivider(timeUnit);
+  for (var i = 0; i < chart.length; i++) {
+    chart[i].start /= timeDivider;
+    chart[i].end /= timeDivider;
+  }
+
+  var chartDiv = document.getElementById("chart");
+  chartDiv.innerHTML = "";
+  var index = 0;
+  for (var i = 0; i < chart.length; i++) {
+    if (chart[i].process !== "") {
+      var span = document.createElement("span");
+      span.innerText = chart[i].process;
+      span.style.width = (chart[i].end - chart[i].start) * 10 + "px"; // Adjust the scaling factor as per your preference
+      span.style.display = "inline-block";
+      span.style.backgroundColor = "hsl(" + (index++ * 57 % 360) + ",100%,80%)";
+      chartDiv.appendChild(span);
+    }
+  }
+
+  var totalExecutionTime = chart[chart.length - 1].end; // Total execution time is the end time of the last process
+
+var averageTime = totalExecutionTime / processes.length;
+var numberOfQuantums = Math.ceil(time / quantum);
+
+  // Update the HTML with the results
+  var resultDiv = document.getElementById("results");
+  resultDiv.innerHTML = "Average Time: " + averageTime.toFixed(2) + " " + timeUnit +
+  "<br>Total Execution Time: " + totalExecutionTime.toFixed(2) + " " + timeUnit +
+  "<br>Number of Quantums: " + numberOfQuantums;
+
+}
+
+
+    function generateNormalDistribution() {
+      var table = document.getElementById("inputTable");
+      var rowCount = table.rows.length;
+      var mean = parseInt(prompt("Enter the mean of the normal distribution:"));
+      var standardDeviation = parseInt(prompt("Enter the standard deviation of the normal distribution:"));
+
+      for (var i = 0; i < rowCount - 1; i++) {
+        var arrivalTime = Math.round(mean + (standardDeviation * Math.sqrt(-2 * Math.log(Math.random()))) * Math.cos(2 * Math.PI * Math.random()));
+        var burstTime = Math.round(mean + (standardDeviation * Math.sqrt(-2 * Math.log(Math.random()))) * Math.cos(2 * Math.PI * Math.random()));
+
+        table.rows[i + 1].cells[1].querySelector('input').value = arrivalTime;
+        table.rows[i + 1].cells[2].querySelector('input').value = burstTime;
+      }
+    }
+
+    function generateUniformDistribution() {
+  const table = document.getElementById("inputTable");
+  const rowCount = table.rows.length;
+
+  const minValue = parseInt(prompt("Enter the minimum value for the uniform distribution:"));
+  const maxValue = parseInt(prompt("Enter the maximum value for the uniform distribution:"));
+
+  for (let i = 0; i < rowCount - 1; i++) {
+    const randomValue1 = Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
+    const randomValue2 = Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
+    table.rows[i + 1].cells[1].querySelector("input").value = randomValue1;
+    table.rows[i + 1].cells[2].querySelector("input").value = randomValue2;
+  }
+}
+
+function generateExponentialDistribution() {
+  const table = document.getElementById("inputTable");
+  const rowCount = table.rows.length;
+
+  const lambda = parseFloat(prompt("Enter the lambda value for the exponential distribution:"));
+
+  for (let i = 0; i < rowCount - 1; i++) {
+    const randomValue11 = Math.ceil(-Math.log(Math.random()) / lambda);
+    const randomValue22 = Math.ceil(-Math.log(Math.random()) / lambda);
+    table.rows[i + 1].cells[1].querySelector("input").value = randomValue11;
+    table.rows[i + 1].cells[2].querySelector("input").value = randomValue22;
+  }
+}
+  </script>
+</body>
+
+</html>

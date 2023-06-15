@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <!-- <script src="script.js"></script> -->
+    <title>SRTF</title>
+</head>
+<body style="background-color: rgb(196 181 253);">
+  <style>
+    .table-cell {
+        border: 1px solid black;
+        padding: 8px;
+    }
+</style>
+    <nav class="bg-violet-700 text-white">
+        <ul class="flex items-center justify-center px-25 py-10">
+            <li class="px-10 hover:text-violet-200"><a href="index.html">Home</a></li>
+            <li class="px-10 hover:text-violet-200"><a href="RoundRobin.html">Round Robin Scheduling</a></li>
+            <li class="px-10 hover:text-violet-200"><a href="SJF.html"> Shortest Job First</a></li>
+            <li class="px-10 hover:text-violet-200"><a href="SRTF.html"> Shortest Remaining Time First</a></li>
+        </ul>
+    </nav>
+    <br><br><br> 
+    <center><div class="justify-center items-center">
+        <h1 class="text-7xl font-bold justify-center">SHORTEST REMAINING TIME FIRST</h1>
+        </div>
+        </center>
+        <br><br><br>
+    <div>
+        <div style="display: flex; justify-content: center;">
+            <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                        <table style="border-collapse: collapse; border: 1px solid black;" id="inputTable" class="py-8 px-4">
+                            <tr>
+                              <th style="border: 1px solid black; padding: 8px;">Process</th>
+                              <th style="border: 1px solid black; padding: 8px;">Arrival time</th>
+                              <th style="border: 1px solid black; padding: 8px;">Burst time</th>
+                            </tr>
+                            <tr>
+                              <td><input type="number" class='table-cell' id="p" min="1"></td>
+                              <td><input type="number" class='table-cell' id="at"></td>
+                              <td><input type="number" class='table-cell' id="bt"></td>
+                              <td>
+                                <select class='table-cell' id="unit">
+                                  <option value="ns">ns</option>
+                                  <option value="ms">ms</option>
+                                  <option value="sec">sec</option>
+                                </select>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td><input type="number" class='table-cell' id="p"></td>
+                              <td><input type="number" class='table-cell' id="at"></td>
+                              <td><input type="number" class='table-cell' id="bt"></td>
+                              <td>
+                                <select class='table-cell' id="unit">
+                                  <option value="ns">ns</option>
+                                  <option value="ms">ms</option>
+                                  <option value="sec">sec</option>
+                                </select>
+                              </td>
+                          </table>
+                  <!-- <div class="flex"><h2 class="font-medium">Time Quantum - </h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <input id="timequant" type="number" class="table-cell" value="2">
+                    </div> -->
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+    <div style="display: flex; justify-content: center;">
+        <button onclick="addRow()" style="border: 20px; border-color: black; background-color: grey; height: 30px; width:30px;">+</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button style="background-color: #7F00FF; color: #fff; border-radius: 9999px; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: bold; text-align: center; text-decoration: none; display: inline-block; margin: 1rem 0; cursor: pointer; transition: background-color 0.3s ease-in-out;"
+                onmouseover="this.style.backgroundColor='#7F00FF'; this.style.color='white'"
+                onmouseout="this.style.backgroundColor='violet'; this.style.color='white'"
+                onclick="executeSRTF()">
+          Execute
+        </button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button onclick="deleteRow()" style="border: 20px; border-color: black; background-color: grey; height: 30px; width:30px;">-</button>
+      </div>
+      <br>
+      <br>
+      <div style="display: flex; justify-content: center;">
+        <button style="background-color: #7F00FF; color: #fff; border-radius: 9999px; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: bold; text-align: center; text-decoration: none; display: inline-block; margin: 1rem 0; cursor: pointer; transition: background-color 0.3s ease-in-out;"onclick="generateUniformDistribution()" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Generate Uniform Distribution</button>&nbsp;&nbsp;
+        <button style="background-color: #7F00FF; color: #fff; border-radius: 9999px; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: bold; text-align: center; text-decoration: none; display: inline-block; margin: 1rem 0; cursor: pointer; transition: background-color 0.3s ease-in-out;"onclick="generateNormalDistribution()" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Generate Normal Distribution</button>&nbsp;&nbsp;
+        <button style="background-color: #7F00FF; color: #fff; border-radius: 9999px; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: bold; text-align: center; text-decoration: none; display: inline-block; margin: 1rem 0; cursor: pointer; transition: background-color 0.3s ease-in-out;"onclick="generateExponentialDistribution()" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Generate Exponential Distribution</button>
+      </div>
+      <center>
+      <div>
+        Gantt Chart: 
+      </div>
+      <p id="averageExecutionTime"></p>
+
+      
+    <div id="chart"></div>
+</center>
+      <script>
+     function addRow() {
+      var table = document.getElementById("inputTable");
+      var rowCount = table.rows.length;
+      var row = table.insertRow(rowCount - 1);
+      var processCell = row.insertCell(0);
+      var arrivalTimeCell = row.insertCell(1);
+      var burstTimeCell = row.insertCell(2);
+      var unitCell = row.insertCell(3);
+      processCell.innerHTML = "<input type='number'class='table-cell' id='p' min=1>";
+      arrivalTimeCell.innerHTML = "<input type='number' class='table-cell' id='at' >";
+      burstTimeCell.innerHTML = "<input type='number' class='table-cell' id='bt'>";
+      unitCell.innerHTML = "                  <select class='table-cell' id='unit'><option value='ns'>ns</option><option value='ms'>ms</option><option value='sec'>sec</option></select>";
+    }
+
+    function deleteRow() {
+      var table = document.getElementById("inputTable");
+      var rowCount = table.rows.length;
+      if (rowCount > 2) {
+        table.deleteRow(rowCount - 2);
+      }
+    }
+    function getTimeMultiplier(timeUnit) {
+  switch (timeUnit) {
+    case "ns":
+      return 1;
+    case "us":
+      return 1000;
+    case "ms":
+      return 1000000;
+    case "s":
+      return 1000000000;
+    default:
+      return 1;
+  }
+}
+
+function getTimeDivider(timeUnit) {
+  switch (timeUnit) {
+    case "ns":
+      return 1;
+    case "us":
+      return 1000;
+    case "ms":
+      return 1000000;
+    case "s":
+      return 1000000000;
+    default:
+      return 1;
+  }
+}
+
+function executeSRTF() {
+  var table = document.getElementById("inputTable");
+  var rows = table.rows;
+  var processes = [];
+  var arrivalTimes = [];
+  var burstTimes = [];
+  var remainingTimes = [];
+  for (var i = 1; i < rows.length; i++) {
+    var cells = rows[i].cells;
+    var process = cells[0].querySelector('input').value;
+    var arrivalTime = parseInt(cells[1].querySelector('input').value);
+    var burstTime = parseInt(cells[2].querySelector('input').value);
+    
+    // Check if arrival time and burst time are greater than zero
+    if (process<1|| arrivalTime < 0 || burstTime < 0) {
+      alert("Arrival time and burst time must be positive and process id must be greater than 0");
+      return;
+    }
+    
+    processes.push(process);
+    arrivalTimes.push(arrivalTime);
+    burstTimes.push(burstTime);
+    remainingTimes.push(burstTime);
+  }
+
+  var timeUnit = "ms"; // Change the desired time unit here
+
+  var timeMultiplier = getTimeMultiplier(timeUnit);
+  var timeDivider = getTimeDivider(timeUnit);
+
+  var time = 0;
+  var completed = [];
+  var chart = [];
+
+  while (completed.length < processes.length) {
+    var shortestTime = Infinity;
+    var nextProcess = -1;
+    for (var i = 0; i < processes.length; i++) {
+      if (completed.indexOf(i) < 0 && arrivalTimes[i] <= time && remainingTimes[i] < shortestTime && remainingTimes[i] > 0) {
+        shortestTime = remainingTimes[i];
+        nextProcess = i;
+      }
+    }
+
+    if (nextProcess < 0) {
+      chart.push({ process: null, start: time * timeMultiplier, end: (time + 1) * timeMultiplier });
+      time += 1;
+    } else {
+      chart.push({ process: processes[nextProcess], start: time * timeMultiplier, end: (time + 1) * timeMultiplier });
+      remainingTimes[nextProcess] -= 1;
+      time += 1;
+
+      if (remainingTimes[nextProcess] === 0) {
+        completed.push(nextProcess);
+      } else {
+        for (var i = 0; i < processes.length; i++) {
+          if (completed.indexOf(i) < 0 && arrivalTimes[i] <= time && remainingTimes[i] < shortestTime && remainingTimes[i] > 0) {
+            shortestTime = remainingTimes[i];
+            nextProcess = i;
+          }
+        }
+
+        if (nextProcess !== -1 && nextProcess !== completed[completed.length - 1]) {
+          chart.push({ process: "", start: time * timeMultiplier, end: time * timeMultiplier });
+        }
+      }
+    }
+  }
+
+  var chartDiv = document.getElementById("chart");
+  chartDiv.innerHTML = "";
+  for (var i = 0; i < chart.length; i++) {
+    var span = document.createElement("span");
+    span.innerText = chart[i].process || "Idle";
+    span.style.width = (chart[i].end - chart[i].start) / timeDivider + "px";
+    span.style.display = "inline-block";
+    if (chart[i].process) {
+      span.style.backgroundColor = "hsl(" + (i * 57 % 360) + ",100%,80%)";
+    }
+    chartDiv.appendChild(span);
+  }
+  
+  // Calculate average execution time
+  var totalExecutionTime = 0;
+  for (var i = 0; i < burstTimes.length; i++) {
+    totalExecutionTime += burstTimes[i];
+  }
+  var averageExecutionTime = totalExecutionTime / burstTimes.length;
+  
+  // Display average execution time
+  var averageExecutionTimeElement = document.getElementById("averageExecutionTime");
+  averageExecutionTimeElement.textContent = "Average Execution Time: " + averageExecutionTime.toFixed(2) + " " + timeUnit;
+}
+
+
+
+function generateNormalDistribution() {
+      var table = document.getElementById("inputTable");
+      var rowCount = table.rows.length;
+      var mean = parseInt(prompt("Enter the mean of the normal distribution:"));
+      var standardDeviation = parseInt(prompt("Enter the standard deviation of the normal distribution:"));
+
+      for (var i = 0; i < rowCount - 1; i++) {
+        var arrivalTime = Math.round(mean + (standardDeviation * Math.sqrt(-2 * Math.log(Math.random()))) * Math.cos(2 * Math.PI * Math.random()));
+        var burstTime = Math.round(mean + (standardDeviation * Math.sqrt(-2 * Math.log(Math.random()))) * Math.cos(2 * Math.PI * Math.random()));
+
+        table.rows[i + 1].cells[1].querySelector('input').value = arrivalTime;
+        table.rows[i + 1].cells[2].querySelector('input').value = burstTime;
+      }
+    }
+
+    function generateUniformDistribution() {
+  const table = document.getElementById("inputTable");
+  const rowCount = table.rows.length;
+
+  const minValue = parseInt(prompt("Enter the minimum value for the uniform distribution:"));
+  const maxValue = parseInt(prompt("Enter the maximum value for the uniform distribution:"));
+
+  for (let i = 0; i < rowCount - 1; i++) {
+    const randomValue1 = Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
+    const randomValue2 = Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
+    table.rows[i + 1].cells[1].querySelector("input").value = randomValue1;
+    table.rows[i + 1].cells[2].querySelector("input").value = randomValue2;
+  }
+}
+
+function generateExponentialDistribution() {
+  const table = document.getElementById("inputTable");
+  const rowCount = table.rows.length;
+
+  const lambda = parseFloat(prompt("Enter the lambda value for the exponential distribution:"));
+
+  for (let i = 0; i < rowCount - 1; i++) {
+    const randomValue11 = Math.ceil(-Math.log(Math.random()) / lambda);
+    const randomValue22 = Math.ceil(-Math.log(Math.random()) / lambda);
+    table.rows[i + 1].cells[1].querySelector("input").value = randomValue11;
+    table.rows[i + 1].cells[2].querySelector("input").value = randomValue22;
+  }
+}
+
+
+      </script>
+</body>
+</html>

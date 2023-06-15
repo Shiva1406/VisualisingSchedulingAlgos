@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Instruction Page</title>
+    <style>
+        /* CSS Styles */
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #f1f1f1;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header img {
+            max-width: 200px;
+        }
+
+        nav {
+            background-color: #333;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        section {
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        .step {
+            margin-bottom: 20px;
+        }
+
+        .step img {
+            max-width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .step p {
+            margin-bottom: 10px;
+        }
+
+        .step textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .additional-section textarea {
+            width: 100%;
+            padding: 10px;
+        }
+
+        footer {
+            background-color: #f1f1f1;
+            padding: 20px;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 5px 0;
+        }
+
+        /* Responsive CSS */
+
+        @media only screen and (max-width: 768px) {
+            header img {
+                max-width: 150px;
+            }
+
+            .step textarea,
+            .additional-section textarea {
+                font-size: 14px;
+            }
+        }
+
+        @media only screen and (max-width: 480px) {
+            header img {
+                max-width: 100px;
+            }
+
+            .step h2,
+            .additional-section h2 {
+                font-size: 18px;
+            }
+
+            .step p {
+                font-size: 14px;
+            }
+
+            .step textarea,
+            .additional-section textarea {
+                font-size: 12px;
+            }
+        }
+		
+		.step {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.5s, transform 1.5s;
+        }
+
+        .step.fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+		
+		.two {
+		  border-style: solid;
+		  border-width: medium;
+		}
+    </style>
+	
+	<script>
+        // JavaScript for scroll down fade-in effect
+        function scrollFadeIn() {
+            var steps = document.querySelectorAll('.step');
+
+            function checkFade() {
+                for (var i = 0; i < steps.length; i++) {
+                    var step = steps[i];
+                    var stepPosition = step.getBoundingClientRect().top;
+                    var windowHeight = window.innerHeight;
+
+                    if (stepPosition < windowHeight - 50) {
+                        step.classList.add('fade-in');
+                    }
+                }
+            }
+
+            window.addEventListener('scroll', checkFade);
+            checkFade();
+        }
+    </script>
+</head>
+<body onload="scrollFadeIn()">
+    <header>
+        <img src="img\logo.png" alt="Company Logo">
+    </header>
+    <nav>
+        <a href="index.html">Instruction</a>
+        <a href="RoundRobin.html">Round Robin</a>
+        <a href="bankers.html">Bankers Algorithm</a>
+        <a href = "process_sync.htm">Train Ticket Example</a>
+    </nav>
+    <section>
+        <h1 style="font-size:2.2vw">Introduction to OpenBSD</h1>
+        <div>
+            <p>OpenBSD is a security-focused, free and open-source, Unix-like operating system based on the Berkeley Software Distribution (BSD). Theo de Raadt created OpenBSD in 1995 by forking NetBSD 1.0.[4] According to the website, the OpenBSD project emphasizes "portability, standardization, correctness, proactive security and integrated cryptography."</p>
+        </div>
+		        <h1 style="font-size:1.1vw">Special features of OpenBSD:</h1>
+        <div>
+            <p>Assume you have a server running a different operating system than OpenBSD that has been hacked through SQL injection. The attacker may cause havoc on the system if that SQL server was operating as a normal user. The user www, a restricted account, operates OpenBSD's built-in web server. It is also operated within a chroot prison. Finally, it is executed using a shell that does not allow logins. The attacker does not even have access to a shell prompt from which to perform commands. 
+				Other operating systems allow chroots, although they are seldom, if ever, used by default.
+				[chroot: chroot works by​​ changing the root directory of a program, restricting access and visibility, and thus providing an added layer of isolation and security.]</p>
+			</div>
+			
+		  <h1 style="font-size:1.1vw">Write XOR Execute:</h1>
+        <div>
+            <p>The next security feature pioneered by OpenBSD is known as write XOR execute (W X). A process's or the kernel's address space can be readable or executable, but not both. In 2003, OpenBSD was the first operating system to include this capability in version 3.3.</p>
+        </div>
+		 <h1 style="font-size:1.1vw">Guard Pages:</h1>
+        <div>
+            <p>Similarly, guard pages were incorporated into OpenBSD in 2003. Guard pages insert an unreadable and unwritable page in memory at the end of each page of memory to detect overruns.</p>
+        </div>
+		<h1 style="font-size:1.1vw">Address Space Randomization: </h1>
+        <div>
+            <p>This feature eliminates the need for code to be in the same location each time a programme executes. An attacker cannot access data by using a known offset. </p>
+			<p>Let's imagine you have two programmes, A and B. If programme B has a memory leak and attackers know that programme A is loaded before B in memory, they can use the vulnerability in programme B to crash programme A by writing to its memory area.</p>
+			<p>If programme A starts before programme B by default, this does not imply that B will follow A in memory. In reality, a wide gap between the two programmes may be created, or programme C could be inserted between A and B. Even if a third-party piece of software, such as an Apache web server, contains a fault, crashing it does not allow the attacker to exploit anything.</p>
+        </div>
+		<h1 style="font-size:1.1vw">Pledge and Unveil:</h1>
+        <div>
+            <p>Pledge and Unveil are two sides of the same coin: Pledge is used to limit filesystem access, while Unveil is used to limit system calls. The unique pairing of Pledge and Unveil makes it difficult to meaningfully compromise a programme. Even if a programme is compromised, the hacker can only write to one file or directory, or call certain systems.</p>
+        </div>
+        <div class="step">
+            <h1>Download</h1>
+            <a href= "http://www.openbsd.org/ftp.html">Download-Page</a>
+            <p>Click the above link to go to the download page and choose the "Cloudflare(CDN)"</p>
+            <img src="img/download.jpeg" alt="Step 1 Image">
+            
+        </div>
+        <div class="step">
+            <h1>Installation Process</h1>
+            <h2></h2>
+            <h2 class = "two">Step 1: </h2>
+            <img src="img/1.jpeg" alt="Step 1 Image">
+            <p>Once you've selected a mirror, you will be brought to a page with several directories. To download the most recent disk image, select the highest release number. The "7.3" folder should include the most recently updated version as of 7th April 2023, but if you see anything newer, use that.</p>
+        </div>
+
+        <div class="step">
+            <h2 class = "two">Step 2:</h2>
+            <img src="img/2.jpeg" alt="Step 2 Image">
+			<p>Once in the most recent version directory, there should be subdirectories for different system architectures. For most users, amd64 or i386 images will be the most useful.</p>
+        </div>
+
+        <div class="step">
+            <h2 class = "two">Step 3:</h2>
+            <img src="img/3.jpeg" alt="Step 3 Image">
+            <p>Among this set, the "install73.iso" file represents the installation image for version 7.3 of OpenBSD. Click on this file to download and save it onto your system.</p>
+        </div>
+
+        <div class="step">
+            <h2 class = "two">Step 4:</h2>
+            <img src="img/4.jpeg" alt="Step 4 Image">
+			<p>Prepare a VirtualBox if not installed already by using the command "sudo apt install virtualbox"</p>
+            <p>Once VirtualBox is downloaded, installed, and opened, click the "New" button at the top of the window to begin creating the new virtual machine.</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 5:</h2>
+            <img src="img/5.jpeg" alt="Step 3 Image">
+            <p>The next portion of the virtual machine configuration is memory allocation. The user can select the amount of memory required based on the amount of RAM available on the host machine, else the user can choose to go by the mentioned default value and click Next</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 6:</h2>
+            <img src="img/6.jpeg" alt="Step 3 Image">
+            <p>On the Hard disc stage, select "Create a virtual hard disc now." Because OpenBSD will need to be installed within the virtual system, a virtual hard drive will be required. Select "Create."</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 7:</h2>
+            <img src="img/7.jpeg" alt="Step 3 Image">
+            <p>If you don't need to transport the virtual machine image across virtualization tools, leave VDI selected for the Hard disc file type selection step. Click "Next"</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 8:</h2>
+            <img src="img/8.jpeg" alt="Step 3 Image">
+            <p>The following option is to use a dynamically allocated or fixed size virtual hard disc. For most people, "Dynamically allocated" is the easiest to use because it requires the least amount of setting. Click "Continue."</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 9:</h2>
+            <img src="img/9.jpeg" alt="Step 3 Image">
+            <p>Finally, the maximum size and location of the virtual hard disc can be specified. This might be an external hard disc or a specific location on a local hard drive. Because the size is the maximum size to which the virtual hard drive may develop, it may be wise to restrict this amount if there are significant size constraints based on hard disc capacity. Because the base OpenBSD installation would be modest, this restriction might simply be adjusted to a few GB. Select an option and click "Create."</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 10:</h2>
+            <img src="img/10.jpeg" alt="Step 3 Image">
+            <p>The OpenBSD VM should now be accessible to start from the main VirtualBox menu. Simply click the "Start" button at the top of the interface when the OpenBSD virtual machine is selected to start it.</p>
+			<p>Once the virtual machine is started, it will request a boot medium to start the virtual machine from!</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 11:</h2>
+            <img src="img/11.jpeg" alt="Step 3 Image">
+            <p>Click on the folder icon to open a file selector. Click "Add," then browse to and select the OpenBSD ISO image downloaded earlier. Click "Open," then "Choose."</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 12:</h2>
+            <img src="img/12.0.jpeg" alt="Step 3 Image">
+            <p>Now, click "Start" to launch the virtual machine. The OpenBSD installer should begin to boot.</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 13:</h2>
+            <img src="img/12.jpeg" alt="Step 3 Image">
+            <p>On first boot, the OpenBSD image will load a text-based installer environment, as shown in the image below. To begin the installation process, type i and press Enter.</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 14:</h2>
+            <img src="img/13.jpeg" alt="Step 3 Image">
+            <p>This procedure contains a number of questions and setting choices, each of which is discussed briefly. The first question asks for your desired keyboard layout. To list all possible settings, type L or? and hit Enter, or simply type us or uk to alter the keyboard layout to US or UK English.</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 15:</h2>
+            <img src="img/14.jpeg" alt="Step 3 Image">
+            <p>Then, give the hostname a name, something like "openbsd" or any name of your choice</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 16:</h2>
+            <img src="img/15.jpeg" alt="Step 3 Image">
+            <p>The following questions concern network setup. The network settings in a virtual computer are pretty straightforward to configure. As the default network setup settings should be sufficient for most users, each option, beginning with Available network interfaces and ending with DNS domain name, can be responded to by just clicking Enter. Depending on your network arrangement, it may be worth taking greater caution when selecting these parameters during a hardware installation.</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 17:</h2>
+            <img src="img/16.jpeg" alt="Step 3 Image">
+            <p>The following option, Password for root account, allows the root password to be specified. The "will not echo" string indicates that the password will not be displayed when entered, nor will it be returned to the user. In general, the root password should be strong, especially for a server or internet-connected machine.</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 18:</h2>
+            <img src="img/17.jpeg" alt="Step 3 Image">
+            <p>The installer asks if you want to start the SSH daemon, or background service, by default after you input the root password twice. While not required, it may be beneficial. Enter to activate it.</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 19:</h2>
+            <img src="img/18.jpeg" alt="Step 3 Image">
+            <p>The following two questions regard the graphical configuration of the system. If you'd like to use a graphical interface, enable the X Window System by pressing Enter. The next question asks if you would like the X Window System to be started by the xenodm login manager. While this isn't necessary, it will make installing a different desktop environment easier, as shown later in this tutorial. To enable it, type yes and press Enter.</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 20:</h2>
+            <img src="img/19.jpeg" alt="Step 3 Image">
+            <p>Then, for a standard-level user, provide a name and password. Because it is advisable not to operate as the root user for security concerns, this user will be utilised for most common desktop functions. For most users, blocking root SSH login is also a good idea for security reasons.</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 21:</h2>
+            <img src="img/20.jpeg" alt="Step 3 Image">
+			<img src="img/22.jpeg" alt="Step 3 Image">
+            <p>For the last question in this set, enter ? to see the available time zones, then type your preferred choice from the list or press Enter to continue with the default selection. Then, so the same thing with the sub-time zone.</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 22:</h2>
+            <img src="img/23.jpeg" alt="Step 3 Image">
+            <p>Then, the installer will partition the disks. In general, the only disk available for the virtual machine will be fine for the installation — click Enter.</p>
+			<p>While custom partitioning is possible within the virtual machine environment, the default Whole disc MBR configuration, abbreviated to w, is an excellent choice. To proceed with the installation, press Enter once more.</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 23:</h2>
+            <img src="img/24.jpeg" alt="Step 3 Image">
+            <p>The following section of the installation allows you to select, download, and install "sets" of packages. Enter http when prompted for the location of the sets to download them from the internet.</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 24:</h2>
+            <img src="img/25.jpeg" alt="Step 3 Image">
+            <p>You can provide your preferred HTTP proxy and server, although most users will be OK with the default configuration of no proxy.</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 25:</h2>
+            <img src="img/26.jpeg" alt="Step 3 Image">
+            <p>Sets can then be chosen, or you can simply install them all. To begin installing the sets, press Enter. After the sets have finished installing, press Enter again to choose "done" as the location of the sets.</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 26:</h2>
+            <img src="img/27.jpeg" alt="Step 3 Image">
+            <p>If a time option appears, just click Enter. Then, the OpenBSD installation should be complete! To start it, click Enter to select "Reboot" and wait for the system to load.</p>
+        </div>
+		<div class="step">
+			<h1>Delete the install file</h1>
+            <h2 class = "two">Step 27:</h2>
+            <img src="img/28.jpeg" alt="Step 3 Image">
+            <p>The system may boot back into the installation screen, most likely because the initial installation DVD is still loaded, rather than the virtual hard drive. In this situation, shut down the OpenBSD VM.</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 28:</h2>
+            <img src="img/29.jpeg" alt="Step 3 Image">
+            <p>Then, within VirtualBox, select the OpenBSD virtual machine and click "Settings."</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 29:</h2>
+            <img src="img/30.jpeg" alt="Step 3 Image">
+            <p>Right-click on the ISO installation file listed under Storage Devices in the "Storage" menu and select "Remove Attachment." On the popup, select "Remove" and then "OK" to exit the settings. The virtual computer should then be restarted.</p>
+        </div>
+		<div class="step">
+            <h2 class = "two">Step 30:</h2>
+            <img src="img/31.jpeg" alt="Step 3 Image">
+            <p>If a login screen such as the one below appears, OpenBSD has installed and booted from its virtual hard drive. Now, we can log in to the OpenBSD desktop environment.</p>
+        </div>
+		<br>
+		<div class="step">
+            <h2 class = "two">The basic commands used in OpenBSD are similar to those in UNIX. Some of them are:</h2>
+            <img src="img/d1.jpeg" alt="Step 3 Image">
+            <p>man: Interface to the system manual pages. For any of the commands listed below, type man command for detailed information on what it does and how to use it.</p>
+			<br>
+			<img src="img/d2.jpeg" alt="Step 3 Image">
+			<p>touch: A command that is used to create files instantly</p>
+			<br>
+			<img src="img/d3.jpeg" alt="Step 3 Image">
+			<p>vi: vi is a screen-oriented text editor originally created for the Unix operating system that is used to edit configuration files, create a grocery list, write a letter home to ask for money, create a new script, or even edit source code
+				cat: It reads each File parameter in sequence and writes it to standard output. If you do not specify a file name, the cat command reads from standard input</p>
+			<br>
+			<br>
+			<img src="img/d4.jpeg" alt="Step 3 Image">
+			<p>date: The date command is used to display the current date</p>
+			<br>
+			<br>
+			<img src="img/d3.jpeg" alt="Step 3 Image">
+			<p>ls: It is used to list files and directories</p>
+			<br>
+        </div>
+    </section>
+    <footer>
+        <p>Ramya</p>
+        <p>CB.EN.U4CSE21263</p>
+    </footer>
+</body>
+</html>

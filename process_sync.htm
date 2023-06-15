@@ -1,0 +1,208 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producer Consumer</title>
+</head>
+
+<body style="background-color: rgb(196 181 253);">
+    <center>
+    <h1>Demonstrating the Producer Consumer Problem</h1>
+</center>
+<br>
+<br>
+<br><br>
+<br><br>
+<br>
+    <div id="train-booking">
+        <h3>Select Seats:</h3>
+        <div id="seat-map"></div>
+        <p id="message"></p>
+        <button id="book-button">Book Seats</button>
+        <button id="next-day-button">Next Day</button>
+      </div>
+      
+</body>
+<style>#train-booking {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  
+  #seat-map {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  
+  .seat {
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .seat.occupied {
+    background-color: red;
+    color: white;
+    cursor: not-allowed;
+  }
+  
+  .seat.empty {
+    background-color: green;
+    color: white;
+  }
+  
+  .seat.selected {
+    background-color: yellow;
+    color: black;
+  }
+  
+  #message {
+    margin-bottom: 10px;
+  }
+  
+  #book-button,
+  #next-day-button {
+    padding: 10px 20px;
+    background-color: #0f0;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  
+  #book-button {
+    background-color: #f90;
+  }
+  
+  #next-day-button {
+    display: none;
+  }
+  
+
+</style>
+<script>
+    var seats = [
+  { id: "A1", occupied: false },
+  { id: "A2", occupied: false },
+  { id: "A3", occupied: false },
+  { id: "A4", occupied: true },
+  { id: "A5", occupied: false },
+  { id: "B1", occupied: false },
+  { id: "B2", occupied: true },
+  { id: "B3", occupied: false },
+  { id: "B4", occupied: true },
+  { id: "B5", occupied: false },
+  { id: "C1", occupied: true },
+  { id: "C2", occupied: true },
+  { id: "C3", occupied: true },
+  { id: "C4", occupied: false },
+  { id: "C5", occupied: false },
+];
+
+var selectedSeats = [];
+
+function createSeatElement(seat) {
+  var seatElement = document.createElement("button");
+  seatElement.id = seat.id;
+  seatElement.classList.add("seat");
+  seatElement.innerText = seat.id;
+  seatElement.addEventListener("click", function () {
+    if (!seat.occupied && !selectedSeats.includes(seat)) {
+      toggleSeatSelection(seat);
+    }
+  });
+  return seatElement;
+}
+
+function renderSeatMap() {
+  var seatMapElement = document.getElementById("seat-map");
+  seatMapElement.innerHTML = "";
+
+  for (var i = 0; i < seats.length; i++) {
+    var seatElement = createSeatElement(seats[i]);
+    if (seats[i].occupied) {
+      seatElement.classList.add("occupied");
+    } else {
+      seatElement.classList.add("empty");
+    }
+    seatMapElement.appendChild(seatElement);
+  }
+}
+
+function toggleSeatSelection(seat) {
+  var seatElement = document.querySelector(`#${seat.id}`);
+  seatElement.classList.toggle("selected");
+
+  if (selectedSeats.includes(seat)) {
+    selectedSeats = selectedSeats.filter(function (selectedSeat) {
+      return selectedSeat.id !== seat.id;
+    });
+  } else {
+    selectedSeats.push(seat);
+  }
+}
+
+function bookSelectedSeats() {
+  if (selectedSeats.length === 0) {
+    document.getElementById("message").innerText = "Please select at least one seat.";
+    return;
+  }
+
+  var availableSeats = seats.filter(function (seat) {
+    return !seat.occupied;
+  });
+
+  if (selectedSeats.length > availableSeats.length) {
+    document.getElementById("message").innerText = "Not enough seats available.";
+    return;
+  }
+
+  var allSeatsOccupied = seats.every(function (seat) {
+  return seat.occupied || selectedSeats.some(function (selectedSeat) {
+    return selectedSeat.id === seat.id;
+  });
+});
+
+
+  if (allSeatsOccupied) {
+    document.getElementById("message").innerText = "All selected seats are occupied. Showing next day's train.";
+    document.getElementById("next-day-button").style.display = "block";
+  } else {
+    document.getElementById("message").innerText = "Seats booked successfully!";
+    document.getElementById("next-day-button").style.display = "none";
+    selectedSeats.forEach(function (selectedSeat) {
+      selectedSeat.occupied = true;
+      var seatElement = document.querySelector(`#${selectedSeat.id}`);
+      seatElement.classList.remove("selected", "empty");
+      seatElement.classList.add("occupied");
+    });
+  }
+
+  selectedSeats = [];
+}
+
+function showNextDayTrain() {
+  seats.forEach(function (seat) {
+    seat.occupied = false;
+    var seatElement = document.querySelector(`#${seat.id}`);
+    seatElement.classList.remove("occupied", "selected");
+    seatElement.classList.add("empty");
+  });
+
+  document.getElementById("message").innerText = "Showing next day's train.";
+  document.getElementById("next-day-button").style.display = "none";
+}
+
+renderSeatMap();
+
+document.getElementById("book-button").addEventListener("click", bookSelectedSeats);
+document.getElementById("next-day-button").addEventListener("click", showNextDayTrain);
+
+</script>
+</html>

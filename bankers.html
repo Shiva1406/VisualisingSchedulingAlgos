@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banker's Algorithm</title>
+    <style>
+        body {
+            background-color: rgb(196, 181, 253);
+            text-align: center;
+        }
+      
+        h1 {
+            color: white;
+        }
+      
+        table {
+            margin: 0 auto;
+        }
+      
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+      
+        th, td {
+            padding: 8px;
+        }
+      
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+      
+        input {
+            width: 50px;
+        }
+      
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+      
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>Banker's Algorithm</h1>
+  
+    <label for="processes">Number of Processes:</label>
+    <input type="number" id="processes" min="1" value="3">
+  
+    <label for="resources">Number of Resources:</label>
+    <input type="number" id="resources" min="1" value="3">
+  
+    <button id="generate-tables">Generate Tables</button>
+  
+    <div id="tables"></div>
+  
+    <button id="run-algorithm">Run Banker's Algorithm</button>
+  
+    <div id="output"></div>
+
+    <script>
+        document.getElementById('generate-tables').addEventListener('click', function() {
+            const numProcesses = parseInt(document.getElementById('processes').value);
+            const numResources = parseInt(document.getElementById('resources').value);
+            const tablesContainer = document.getElementById('tables');
+        
+            tablesContainer.innerHTML = '';
+        
+            const maxAllocationTable = createAllocationTable('max-allocation-table', numProcesses, numResources, 'Maximum Resource Allocation');
+            const currentAllocationTable = createAllocationTable('current-allocation-table', numProcesses, numResources, 'Current Resource Allocation');
+            const availableVectorTable = createVectorTable('available-vector-table', numResources, 'Available Vector');
+        
+            tablesContainer.appendChild(maxAllocationTable);
+            tablesContainer.appendChild(currentAllocationTable);
+            tablesContainer.appendChild(availableVectorTable);
+        });
+      
+        function createAllocationTable(tableId, numProcesses, numResources, caption) {
+            const table = document.createElement('table');
+            table.id = tableId;
+        
+            const captionElement = document.createElement('caption');
+            captionElement.innerText = caption;
+            table.appendChild(captionElement);
+        
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+        
+            // Create table header
+            const headerRow = document.createElement('tr');
+            const processHeader = document.createElement('th');
+            processHeader.innerText = 'Process';
+            headerRow.appendChild(processHeader);
+        
+            for (let i = 1; i <= numResources; i++) {
+                const resourceHeader = document.createElement('th');
+                resourceHeader.innerText = 'Resource ' + i;
+                headerRow.appendChild(resourceHeader);
+            }
+        
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+        
+            // Create table body
+            for (let i = 1; i <= numProcesses; i++) {
+                const row = document.createElement('tr');
+        
+                const processCell = document.createElement('td');
+                processCell.innerText = 'P' + i;
+                row.appendChild(processCell);
+        
+                for (let j = 1; j <= numResources; j++) {
+                    const cell = document.createElement('td');
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.min = '0';
+                    input.value = '0';
+                    cell.appendChild(input);
+                    row.appendChild(cell);
+                }
+        
+                tbody.appendChild(row);
+            }
+        
+            table.appendChild(tbody);
+        
+            return table;
+        }
+      
+        function createVectorTable(tableId, numResources, caption) {
+            const table = document.createElement('table');
+            table.id = tableId;
+        
+            const captionElement = document.createElement('caption');
+            captionElement.innerText = caption;
+            table.appendChild(captionElement);
+        
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+        
+            // Create table header
+            const headerRow = document.createElement('tr');
+            const resourceHeader = document.createElement('th');
+            resourceHeader.innerText = 'Resource';
+            headerRow.appendChild(resourceHeader);
+        
+            for (let i = 1; i <= numResources; i++) {
+                const resourceIndexHeader = document.createElement('th');
+                resourceIndexHeader.innerText = 'Resource ' + i;
+                headerRow.appendChild(resourceIndexHeader);
+            }
+        
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+        
+            // Create table body
+            const row = document.createElement('tr');
+        
+            const resourceCell = document.createElement('td');
+            resourceCell.innerText = 'Available';
+            row.appendChild(resourceCell);
+        
+            for (let j = 1; j <= numResources; j++) {
+                const cell = document.createElement('td');
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.min = '0';
+                input.value = '0';
+                cell.appendChild(input);
+                row.appendChild(cell);
+            }
+        
+            tbody.appendChild(row);
+            table.appendChild(tbody);
+        
+            return table;
+        }
+      
+        document.getElementById('run-algorithm').addEventListener('click', function() {
+            const maxAllocationTable = document.getElementById('max-allocation-table');
+            const currentAllocationTable = document.getElementById('current-allocation-table');
+            const availableVectorTable = document.getElementById('available-vector-table');
+        
+            const maxVector = getAllocationVector(maxAllocationTable);
+            const currentVector = getAllocationVector(currentAllocationTable);
+            const availableVector = getVectorValues(availableVectorTable);
+        
+            const safeSequence = bankersAlgorithm(maxVector, currentVector, availableVector);
+        
+            const outputContainer = document.getElementById('output');
+            outputContainer.innerHTML = '';
+        
+            const outputText = document.createElement('p');
+        
+            if (safeSequence) {
+                outputText.innerText = 'Safe Sequence: ' + safeSequence.join(' -> ');
+                outputText.style.color = 'green';
+            } else {
+                outputText.innerText = 'No safe sequence found.';
+                outputText.style.color = 'red';
+            }
+        
+            outputContainer.appendChild(outputText);
+        });
+      
+        function getAllocationVector(table) {
+            const allocationVector = [];
+        
+            const tbody = table.getElementsByTagName('tbody')[0];
+            const rows = tbody.getElementsByTagName('tr');
+        
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                const rowValues = [];
+        
+                for (let j = 1; j < cells.length; j++) {
+                    const inputValue = cells[j].getElementsByTagName('input')[0].value;
+                    rowValues.push(parseInt(inputValue));
+                }
+        
+                allocationVector.push(rowValues);
+            }
+        
+            return allocationVector;
+        }
+      
+        function getVectorValues(table) {
+            const vector = [];
+        
+            const tbody = table.getElementsByTagName('tbody')[0];
+            const row = tbody.getElementsByTagName('tr')[0];
+            const cells = row.getElementsByTagName('td');
+        
+            for (let i = 1; i < cells.length; i++) {
+                const inputValue = cells[i].getElementsByTagName('input')[0].value;
+                vector.push(parseInt(inputValue));
+            }
+        
+            return vector;
+        }
+      
+        function bankersAlgorithm(maxVector, currentVector, availableVector) {
+            const numProcesses = maxVector.length;
+            const numResources = maxVector[0].length;
+        
+            const workVector = availableVector.slice();
+            const finish = Array(numProcesses).fill(false);
+            const safeSequence = [];
+        
+            let count = 0;
+        
+            while (count < numProcesses) {
+                let found = false;
+        
+                for (let i = 0; i < numProcesses; i++) {
+                    if (!finish[i]) {
+                        let j;
+        
+                        for (j = 0; j < numResources; j++) {
+                            if (maxVector[i][j] - currentVector[i][j] > workVector[j])
+                                break;
+                        }
+        
+                        if (j === numResources) {
+                            for (let k = 0; k < numResources; k++) {
+                                workVector[k] += currentVector[i][k];
+                            }
+        
+                            safeSequence.push(i);
+                            finish[i] = true;
+                            found = true;
+                            count++;
+                        }
+                    }
+                }
+        
+                if (!found)
+                    break;
+            }
+        
+            if (count === numProcesses)
+                return safeSequence.map(index => 'P' + (index + 1));
+            else
+                return null;
+        }
+    </script>
+</body>
+</html>
